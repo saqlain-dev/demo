@@ -571,7 +571,6 @@ class VendorController extends Controller
         $this->authorizeAny([
             'manage_vendor_portal',
         ]);
-
         $tenderDetail= Tender::query()
             ->with(['tenderDetails.itemDetail','purchaseRequest', 'vendor_quotations' => function ($query) {
                 $query->where('vendor_id', auth()->user()->vendor_id);
@@ -904,7 +903,6 @@ class VendorController extends Controller
         $this->authorizeAny([
             'manage_vendor_portal',
         ]);
-
         $data['vr_list'] = VehicleRequest::query()
             ->with([
                 'vehicleReqVendor' => function ($query) {
@@ -927,7 +925,6 @@ class VendorController extends Controller
         $this->authorizeAny([
             'manage_vendor_portal',
         ]);
-
         $data['vm_list'] = VehicleMaintenanceForm::query()
             ->with([
                 'vehicleMaintenanceVendor' => function ($query) {

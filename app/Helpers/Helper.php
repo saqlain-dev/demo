@@ -4,6 +4,7 @@ use App\Models\Admin\FinancialYear;
 use App\Models\Admin\PurchaseRequestRfqDetail;
 use App\Models\Admin\TenderDetail;
 use App\Models\ApprovalProcessList;
+use App\Models\Employee;
 use App\Models\HR\Attendance\EmployeeManuelAttendance;
 use App\Models\HR\Leaves\LeaveBalanceDetail;
 use App\Models\PurchaseRequestDetail;
@@ -14,6 +15,7 @@ use App\Models\User;
 use App\Jobs\SendEmailJob;
 use App\Models\EmailTemplate;
 use App\Notifications\AppNotification;
+use App\Models\ApprovalProcessName;
 use Illuminate\Support\Facades\DB;
 
 function resp($success = 1, $message = 'Successful!', $data = [], $status_code=200): \Illuminate\Http\JsonResponse
@@ -174,7 +176,6 @@ function getNextApproval($app_process_id,$desg_id,$module_request_id)
 
     $lineManagerApprovalRecord=\App\Models\ApprovalProcessList::query()->where('approval_process_id',$app_process_id)->where('designation_id',1000)->where('approval_request_status',1)->where('request_module_id',$module_request_id)->where('approval_status',2)->first();
 
-
     if($lineManagerApprovalRecord){
 
         if($lineManagerApprovalRecord->approval_status == 3){
@@ -326,7 +327,6 @@ function checkApprovalRequestStatus($process_id,$module_id)
             }else{
                 return null;
             }
-
         }
     }
     return $request_status;

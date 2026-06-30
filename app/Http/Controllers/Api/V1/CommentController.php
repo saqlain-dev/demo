@@ -20,6 +20,11 @@ use App\Models\Program\Project\ProjectProfile;
 use App\Models\Program\ResultResourceFramework;
 use App\Models\Progress\ProgressWorkplan;
 use App\Models\StrategicPlan;
+use App\Models\Customer;
+use App\Models\Lead;
+use App\Models\Opportunity\Opportunity;
+use App\Models\Quotation\Quotation;
+use App\Models\RFQ\Rfq;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use Illuminate\Support\Facades\DB;
@@ -162,6 +167,11 @@ class CommentController extends Controller
             'project_activity_calender' => ActivityCalendar::class,
             'learning_log' => LearningLog::class,
             'event_tasks' => EventTask::class,
+            'customer' => Customer::class,
+            'lead' => Lead::class,
+            'opportunity' => Opportunity::class,
+            'quotation' => Quotation::class,
+            'rfq' => Rfq::class,
             // Add other models here
         ];
 

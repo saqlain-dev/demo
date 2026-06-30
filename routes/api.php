@@ -30,6 +30,26 @@ use App\Http\Controllers\API\V1\HR\SalaryIncrment\EffectSalaryIncrementControlle
 use App\Http\Controllers\API\V1\HR\SalaryIncrment\SalaryIncrementController;
 use App\Http\Controllers\NotificationController;
 
+use App\Http\Controllers\Api\V1\Company;
+
+use App\Http\Controllers\Api\V1\ErpActivity;
+use App\Http\Controllers\Api\V1\ErpConfiguration;
+
+use App\Http\Controllers\Api\V1\Inquiry;
+use App\Http\Controllers\Api\V1\Lead;
+use App\Http\Controllers\Api\V1\Opportunity;
+
+use App\Http\Controllers\Api\V1\Prospect;
+use App\Http\Controllers\Api\V1\Quotation;
+use App\Http\Controllers\Api\V1\Supplier;
+use App\Http\Controllers\Api\V1\Task;
+use App\Http\Controllers\Api\V1\RFP;
+use App\Http\Controllers\Api\V1\RFQ;
+use App\Http\Controllers\Api\V1\ErpPurchaseOrder;
+use App\Http\Controllers\Api\V1\SalesOrder;
+use App\Http\Controllers\Api\V1\Dashboard;
+use App\Http\Controllers\Api\V1\Division;
+use App\Http\Controllers\Api\V1\SalesTeam;
 
 
 /*
@@ -48,6 +68,9 @@ Route::get('get-job-detail/{item}', [App\Http\Controllers\Api\V1\HR\Recruitment\
 Route::post('apply-on_job', [App\Http\Controllers\Api\V1\HR\Recruitment\ManageJobController::class,'applyOnJob']);
 Route::post('vendor/login', [Auth\VendorLoginController::class,'login']);
 Route::post('vendor/signup', [Auth\VendorLoginController::class,'vendorSignup']);
+
+Route::get('public-inquiry-dropdown',[Inquiry\InquiryController::class, 'getInquiryDropdown']);
+Route::apiResource('public-inquiry',Inquiry\InquiryController::class)->only(['store']);
 
 // Candidate Online Test
 Route::get('get-online-test/{uuid}', [HR\Recruitment\CandidateOnlineTestController::class,'getOnlineTest']);
@@ -111,7 +134,6 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('project-rrf-approval/{item}', [Program\Project\ProjectProfileController::class, 'sendProjectRRFForApproval']);
     Route::get('program-dashboard-stats', [Program\ProgramDashboardStatsController::class, 'programDashboardStats']);
 
-
     Route::apiResource('project-profiles', Program\Project\ProjectProfileController::class);
     Route::get('project-profile-rrf-report', [Program\Project\ProjectProfileController::class,'getProjectProfilesRRFReport']);
 
@@ -166,6 +188,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // LAS RRF GOALs
     Route::apiResource('result-resource-framework', Program\ResultResourceFrameworkController::class);
     Route::post('update-las-rrf-indicator-progress', [Program\ResultResourceFrameworkController::class, 'updateLasRrfIndicatorProgress']);
+    // LAS RRF GOALs
+    Route::apiResource('result-resource-framework', Program\ResultResourceFrameworkController::class);
     Route::post('las-rrf-goals/save-indicator', [Program\ResultResourceFrameworkController::class, 'addGoalIndicators']);
     Route::post('las-rrf-goals/update-indicator', [Program\ResultResourceFrameworkController::class, 'updateGoalIndicators']);
     Route::delete('las-rrf-goals/delete-indicator/{item}', [Program\ResultResourceFrameworkController::class, 'deleteGoalIndicators']);
@@ -349,6 +373,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('save-vehicle-request-vendor/{vr}', [Admin\Fleet\VehicleRequestController::class,'attachVRVendor']);
     Route::post('vehicle-request-approval/{item}',[Admin\Fleet\VehicleRequestController::class,'sendVehicleRequestForApproval']);
     Route::get('user-vehicle-request', [Admin\Fleet\VehicleRequestController::class,'userVehicleRequest']);
+    Route::post('save-vehicle-request-vendor/{vr}', [Admin\Fleet\VehicleRequestController::class,'attachVRVendor']);
+    Route::post('vehicle-request-approval/{item}',[Admin\Fleet\VehicleRequestController::class,'sendVehicleRequestForApproval']);
     Route::apiResource('vehicle-request', Admin\Fleet\VehicleRequestController::class);
     Route::apiResource('vehicle-request-detail', Admin\Fleet\VehicleRequestDetailController::class);
     //Route::apiResource('chauffeur', Admin\Fleet\ChauffeurController::class);
@@ -375,6 +401,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('fuel-request-approval/{item}',[Admin\Fleet\FuelRequestController::class,'sendFuelRequestForApproval']);
     Route::apiResource('fuel-request', Admin\Fleet\FuelRequestController::class);
     Route::post('fuel-request-invoice', [Admin\Fleet\FuelRequestController::class,'storeInvoice']);
+    Route::post('fuel-request-approval/{item}',[Admin\Fleet\FuelRequestController::class,'sendFuelRequestForApproval']);
+    Route::apiResource('fuel-request', Admin\Fleet\FuelRequestController::class);
     Route::apiResource('fuel-consumption', Admin\Fleet\FuelConsumptionController::class);
     Route::apiResource('log-book', Admin\Fleet\LogBookController::class);
     Route::apiResource('route-management', Admin\Fleet\RouteManagementController::class);
@@ -475,6 +503,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('email-template-approval/{item}',[\App\Http\Controllers\EmailTemplateController::class,'sendEmailTemplateForApproval']);
     Route::apiResource('email-template', \App\Http\Controllers\EmailTemplateController::class);
     Route::post('get-email-template-data', [\App\Http\Controllers\EmailTemplateController::class,'getEmailTemplateContent']);
+    Route::get('get-employee-contract/{item}', [HR\Recruitment\EmployeeContractController::class,'getEmployeeContract']);
+    //Configuration
+    Route::apiResource('email-template', \App\Http\Controllers\EmailTemplateController::class);
+    Route::post('get-email-template-data', [\App\Http\Controllers\EmailTemplateController::class,'getEmailTemplateContent1']);
 
     Route::apiResource('general-template', Configuration\GeneralTemplatesController::class);
     Route::apiResource('generated-letter', Configuration\GeneratedLetterController::class);
@@ -516,6 +548,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('project-budget', Finance\Budget\ProjectBudgetController::class);
     Route::apiResource('project-budget-detail', Finance\Budget\ProjectBudgetDetailController::class);
     Route::post('budget-upload-csv/{item}', [Finance\Budget\ProjectBudgetDetailController::class,'importCsv']);
+
+    Route::apiResource('project-budget', Finance\Budget\ProjectBudgetController::class);
+    Route::apiResource('project-budget-detail', Finance\Budget\ProjectBudgetDetailController::class);
 
     Route::post('project-budget-realign',[Finance\Budget\ProjectBudgetController::class, 'realignProjectBudget']);
 
@@ -576,6 +611,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //Grant Fund Request
     Route::post('grant-close-out-approval/{item}',[Finance\Grants\GrantCloseOutController::class,'sendGrantCloseOutForApproval']);
+    Route::apiResource('grant-financial-report', Finance\Grants\GrantFinancialReportController::class);
+
+    //Grant Fund Request
     Route::apiResource('grant-close-out', Finance\Grants\GrantCloseOutController::class);
 
     //Grant Appreciation Letter
@@ -607,6 +645,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('sub-grant-financial-report', Finance\SubGrants\SubGrantFinancialReportController::class);
     //Sub Grant Close Out
     Route::post('sub-grant-close-out-approval/{item}',[Finance\SubGrants\SubGrantCloseOutController::class,'sendSubGrantCloseOutForApproval']);
+    Route::apiResource('sub-grant-financial-report', Finance\SubGrants\SubGrantFinancialReportController::class);
+    //Sub Grant Close Out
     Route::apiResource('sub-grant-close-out', Finance\SubGrants\SubGrantCloseOutController::class);
     //Sub Grant Appreciation
     Route::apiResource('sub-grant-appreciation', Finance\SubGrants\SubGrantAppreciationController::class);
@@ -644,6 +684,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('currencies', Finance\CurrencyController::class);
     Route::apiResource('currency-details', Finance\CurrencyDetailController::class);
 
+
+
     //Audit
     //Audit Report
 
@@ -658,6 +700,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('observation-reports', Finance\Audit\ObservationReportController::class);
     Route::apiResource('apr-follow-ups', Finance\Audit\AprFollowUpController::class);
     Route::get('audit-plan-dropdowns', [Finance\Audit\AuditPlanController::class,'getDropdowns']);
+    Route::apiResource('audit-plan-report', Finance\Audit\AuditPlanReportController::class);
 
     // M&E Observation Sheet
     Route::apiResource('observation-sheet', Program\Project\MnE\ObservationSheetController::class);
@@ -719,6 +762,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('approval-process-dropdown',[ApprovalProcess\ApprovalProcessController::class,'getApprovalProcessDropDown']);
     Route::get('approval-process-lists',[ApprovalProcess\ApprovalProcessController::class,'getApprovalProcessList']);
     Route::post('update-approval-process',[ApprovalProcess\ApprovalProcessController::class,'updateApprovalProcess']);
+    Route::get('process-detail/{id}',[ApprovalProcess\ApprovalProcessController::class,'addProcess']);
     Route::apiResource('approval-process', ApprovalProcess\ApprovalProcessController::class);
 
     // User
@@ -813,6 +857,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('add-multiple-nature-of-work', [Admin\VehicleMaintenanceDetailController::class,'addMultipleNatureOfWork']);
     Route::apiResource('vehicle-maintenance-details', Admin\VehicleMaintenanceDetailController::class);
     Route::apiResource('rfq-types', Admin\RfqTypeController::class);
+    Route::post('save-vehicle-maintenance-vendor/{vm}', [Admin\VehicleMaintenanceFormController::class,'attachVMVendor']);
+    Route::post('maintenance-request-approval/{item}',[Admin\VehicleMaintenanceFormController::class,'sendMaintenanceRequestForApproval']);
+    Route::apiResource('vehicle-maintenance-forms', Admin\VehicleMaintenanceFormController::class);
+    Route::apiResource('vehicle-maintenance-details', Admin\VehicleMaintenanceDetailController::class);
+    Route::apiResource('rfq-types', Admin\RfqTypeController::class);
+
     // Vehicle Maintenance Request Quotation
     Route::post('accept-vm-quotation/{vm}', [Admin\VehicleMaintenanceFormController::class,'acceptVMQuotation']);
     Route::get('get-vm-quotation/{vm}', [Admin\VendorVehMaintenanceQuotController::class,'getVMQuotationList']);
@@ -911,6 +961,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::apiResource('procurements',Admin\ProcurementController::class);
     Route::get('/get-all-procurements',[Admin\ProcurementController::class,'getAllProcurements']);
+    Route::post('update-procurement-item/{item}', [Admin\ProcurementController::class, 'updateItem']);
+    Route::post('program-budget-heads', [Admin\ProcurementController::class, 'getHeadByProgramBudget']);
+    Route::get('get-procurement-item/{item}', [Admin\ProcurementController::class, 'getItem']);
+
+    Route::apiResource('procurements',Admin\ProcurementController::class);
 
     // Vendor Documents
     Route::apiResource('vendor-documents',Admin\VendorDocumentsController::class);
@@ -965,6 +1020,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('purchase-order/vendor-acknowledged',[Admin\PurchaseOrder\PurchaseOrderController::class,'vendorAcknowledged']);
     Route::apiResource('purchase-order',Admin\PurchaseOrder\PurchaseOrderController::class);
     Route::post('update-last-acknowledged-po',[Admin\PurchaseOrder\PurchaseOrderController::class,'updateLastAcknowledged']);
+    Route::post('purchase-order/vendor-acknowledged',[Admin\PurchaseOrder\PurchaseOrderController::class,'vendorAcknowledged']);
+    Route::apiResource('purchase-order',Admin\PurchaseOrder\PurchaseOrderController::class);
 
     // GRN
     Route::post('grn-request-approval/{item}', [Admin\GRN\GRNController::class, 'sendGrnRequestForApproval']);
@@ -1012,6 +1069,11 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/acknowledgment-consultant-contract',[Admin\ConsultantContract\ConsultantContractController::class, 'acknowledgmentConsultantcontract']);
     Route::post('update-last-acknowledged-consultant-contract',[Admin\ConsultantContract\ConsultantContractController::class,'updateLastAcknowledged']);
 
+    Route::post('work-order/vendor-acknowledged',[Admin\WorkOrder\WorkOrderController::class,'vendorAcknowledged']);
+    Route::apiResource('work-order',Admin\WorkOrder\WorkOrderController::class);
+
+    // consultant_contract
+    Route::apiResource('consultant-contracts',Admin\ConsultantContract\ConsultantContractController::class);
 
     // Employee Insurances
     Route::get('employee-insurances/get-dropdowns',[HR\Insurance\EmployeeInsurancesController::class,'getDropdowns']);
@@ -1035,6 +1097,12 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('leave',HR\Leaves\EmployeeLeaveController::class);
 
 
+
+    // HR Employee Leave
+    Route::post('leave-approval/{leave}',[HR\Leaves\EmployeeLeaveController::class,'sendLeaveRequestForApproval']);
+    Route::get('employee-leave-dropdown',[HR\Leaves\EmployeeLeaveController::class,'employeeLeaveDropDown']);
+    Route::get('leave-listing',[HR\Leaves\EmployeeLeaveController::class,'leaveListing']);
+    Route::apiResource('leave',HR\Leaves\EmployeeLeaveController::class);
 
     // Policy
     Route::get('policies-dropdown',[HR\PolicyController::class,'getDropdowns']);
@@ -1123,6 +1191,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('emp-salary-setup-dropdown',[HR\Payroll\EmployeeSalarySetupController::class,'salarySetupDropDown']);
     Route::post('employee-projects',[HR\Payroll\EmployeeSalarySetupController::class,'getEmployeeProjects']);
     Route::post('update-emp-salary-setups',[HR\Payroll\EmployeeSalarySetupController::class,'updateSalarySetup']);
+    Route::get('emp-salary-setup-dropdown',[HR\Payroll\EmployeeSalarySetupController::class,'salarySetupDropDown']);
+    Route::post('employee-projects',[HR\Payroll\EmployeeSalarySetupController::class,'getEmployeeProjects']);
     Route::apiResource('emp-salary-setups',HR\Payroll\EmployeeSalarySetupController::class);
 
     // Employee Wise Allowance & Deduction
@@ -1168,6 +1238,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('minute-of-meeting',Governance\MinuteOfMeetingController::class);
     //minutes of meeting list api with date filter
     Route::post('/report/minute-of-meeting',[Governance\MinuteOfMeetingController::class,'meetListFilterd']);
+    Route::post('minutes-of-meeting-approval/{item}', [Governance\MinuteOfMeetingController::class, 'sendMinutesOfMeetingForApproval']);
+    Route::post('approve-mom/{item}', [Governance\MinuteOfMeetingController::class, 'approveMinutesOfMeeting']);
+    Route::apiResource('minute-of-meeting',Governance\MinuteOfMeetingController::class);
 
     // Board Resolution Passed
     Route::post('board-resolution-approval/{item}', [Governance\BoardResolutionPassedController::class, 'sendBoardResolutionForApproval']);
@@ -1231,6 +1304,10 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::apiResource('voucher',Finance\Voucher\VoucherController::class);
 
     Route::post('jv-approval/{item}',[Finance\Voucher\JournalVoucherController::class,'sendJVRequestForApproval']);
+    Route::post('verified-voucher/{voucher}',[Finance\Voucher\VoucherController::class,'verifiedVoucher']);
+    Route::post('posted-voucher/{voucher}',[Finance\Voucher\VoucherController::class,'postedVoucher']);
+    Route::apiResource('voucher',Finance\Voucher\VoucherController::class);
+
     Route::apiResource('create-journal-voucher',Finance\Voucher\JournalVoucherController::class);
 
     //Financial Analysis And Decision Making
@@ -1287,6 +1364,18 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     //Las configuration
 
+    Route::post('balance-sheet',[Finance\ReportController::class,'getBalanceSheet']);
+    Route::post('general-ledger',[Finance\ReportController::class,'getGeneralLedger']);
+    Route::post('general-journal',[Finance\ReportController::class,'getGeneralJournalReport']);
+    Route::post('payable-receivable',[Finance\ReportController::class,'getPayableReceivable']);
+
+    Route::post('finance_payable_receivable',[Finance\ReportController::class,'getPayableAndReceivableReport']);
+    Route::post('budget_variance_report',[Finance\ReportController::class,'BudgetVarianceReport']);
+
+
+    // Attendance Report
+
+    //Las configuration
     Route::apiResource('las-configuration',Finance\LasConfigurationController::class);
 
     //Bank Information
@@ -1351,6 +1440,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('view-manual-attendance/{attendance}',[HR\AttendanceController::class,'viewManualAttendance']);
     Route::post('manual-attendance-listing',[HR\AttendanceController::class,'manualAttendanceListing']);
     Route::post('manual-attendance-listing-report',[HR\AttendanceController::class,'manualAttendanceListingReport']);
+    Route::post('manual-attendance-listing',[HR\AttendanceController::class,'manualAttendanceListing']);
     Route::post('manual-att-approval/{item}',[HR\AttendanceController::class,'sendManualAttendanceForApproval']);
 
     //Clearance Experience Certificate
@@ -1479,5 +1569,153 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     // Vendor Recommendation
     Route::apiResource('vendor-recommendations', VendorRecommendationController::class);
+    // Jadwa ERP Apis //
+
+    // Company Management
+
+    Route::get('company-dropdown',[Company\CompanyController::class, 'getCompanyDropdowns']);
+    Route::apiResource('company',Company\CompanyController::class);
+
+    // Customer
+
+    Route::get('erp-customer-dropdown',[Customer\CustomerController::class, 'getCustomerDropdowns']);
+    Route::post('save-attachment',[Customer\CustomerController::class, 'saveAttachment']);
+    Route::post('delete-attachment',[Customer\CustomerController::class, 'deleteAttachment']);
+    Route::apiResource('cr-customer',Customer\CustomerController::class);
+
+    Route::apiResource('customer-contact',Customer\CustomerContactController::class);
+
+
+    // Prospect
+
+    Route::get('prospect-dropdown',[Prospect\ProspectController::class, 'getProspectDropdowns']);
+    Route::apiResource('prospect',Prospect\ProspectController::class);
+
+    // CRM DopDown
+
+    Route::get('crm-dropdown',[Company\CompanyController::class, 'getCRMDropdowns']);
+
+    // Lead
+    Route::post('save-lead-attachment',[Lead\LeadController::class, 'saveLeadAttachment']);
+    Route::post('delete-lead-attachment',[Lead\LeadController::class, 'deleteLeadAttachment']);
+    Route::get('lead-dropdown',[Lead\LeadController::class, 'getLeadDropdowns']);
+    Route::apiResource('lead',Lead\LeadController::class);
+
+    // Campaign
+    Route::apiResource('campaign',Campaign\CampaignController::class);
+
+    Route::apiResource('campaign-detail',Campaign\CampaignDetailController::class);
+
+    // Email Campaign
+    Route::get('email-campaign-dropdown',[Campaign\EmailCampaignController::class, 'getEmailCampaignDropdowns']);
+    Route::apiResource('email-campaign',Campaign\EmailCampaignController::class);
+
+    // Erp Activity
+
+    Route::get('activity-dropdown',[ErpActivity\ErpActivityController::class, 'getActivityDropDown']);
+    Route::get('delete-attachment/{id}',[ErpActivity\ErpActivityController::class, 'deleteErpActivityAttachment']);
+    Route::post('activity-attachment',[ErpActivity\ErpActivityController::class, 'addActivityAttachment']);
+    Route::apiResource('erp-activity',ErpActivity\ErpActivityController::class);
+
+    // Task
+    Route::get('task-dropdown',[Task\TaskController::class, 'getTaskDropdowns']);
+    Route::post('update-task-status',[Task\TaskController::class, 'updateTaskStatus']);
+    Route::apiResource('task',Task\TaskController::class);
+
+    // Opportunity
+    Route::get('opportunity-dropdown',[Opportunity\OpportunityController::class, 'getOpportunityDropdown']);
+    Route::post('opportunity-pipeline',[Opportunity\OpportunityController::class, 'getOpportunityPipeline']);
+    Route::post('update-stage-rating',[Opportunity\OpportunityController::class, 'updateStageRating']);
+    Route::apiResource('opportunity',Opportunity\OpportunityController::class);
+
+    // Task
+    Route::get('inquiry-dropdown',[Inquiry\InquiryController::class, 'getInquiryDropdown']);
+    Route::apiResource('inquiry',Inquiry\InquiryController::class);
+
+    // Erp Configuration
+
+    Route::apiResource('erp-item-category',ErpConfiguration\ErpItemCategoryController::class);
+
+    // Erp Sub Category
+    Route::get('category-dropdown',[ErpConfiguration\ErpItemSubCategoryController::class, 'getCategoryDropDown']);
+    Route::apiResource('erp-sub-item-category',ErpConfiguration\ErpItemSubCategoryController::class);
+
+    // Erp Item
+    Route::get('item-dropdown',[ErpConfiguration\ErpItemController::class, 'getItemDropDown']);
+    Route::apiResource('erp-item',ErpConfiguration\ErpItemController::class);
+
+    // Supplier
+    Route::get('supplier-dropdown',[Supplier\SupplierController::class, 'getSupplierDropDown']);
+    Route::apiResource('supplier',Supplier\SupplierController::class);
+
+    // Quotation
+    Route::get('quotation-dropdown',[Quotation\QuotationController::class, 'getQuotationDropDown']);
+    Route::post('save-term-condition',[Quotation\QuotationController::class, 'addTermCondition']);
+    Route::post('update-term-condition',[Quotation\QuotationController::class, 'updateTermCondition']);
+
+    Route::post('quotation-approval/{item}',[Quotation\QuotationController::class,'sendQuotationForApproval']);
+    Route::apiResource('quotation',Quotation\QuotationController::class);
+
+    // Quotation Detail
+    Route::apiResource('quotation-detail', Quotation\QuotationDetailController::class);
+
+    // Comments
+
+    Route::apiResource('comments', \App\Http\Controllers\Api\V1\CommentController::class);
+
+    // Attachments
+    Route::apiResource('attachments', \App\Http\Controllers\Api\V1\AttachmentController::class);
+
+    // RFP
+    Route::get('rfp-dropdown',[RFP\RfpController::class, 'getRfpDropDown']);
+    Route::post('rfp-item',[RFP\RfpController::class, 'addRfpItems']);
+    Route::post('delete-rfp-item',[RFP\RfpController::class, 'deleteRfpItem']);
+    Route::post('send-for-pricing',[RFP\RfpController::class, 'sendForPricing']);
+    Route::post('submit-pricing',[RFP\RfpController::class, 'submitPricing']);
+    Route::apiResource('rfp', RFP\RfpController::class);
+
+    // RFQ
+    Route::get('rfq-dropdown',[RFQ\RfqController::class, 'getRfqDropDown']);
+    Route::post('rfq-item',[RFQ\RfqController::class, 'addRfqItems']);
+    Route::post('delete-rfq-item',[RFQ\RfqController::class, 'deleteRfqItem']);
+    Route::apiResource('rfq', RFQ\RfqController::class);
+
+    // ERP Purchase Order
+    Route::get('erp-po-dropdown',[ErpPurchaseOrder\ErpPurchaseOrderController::class, 'getErpPoDropDown']);
+    Route::post('erp-po-item',[ErpPurchaseOrder\ErpPurchaseOrderController::class, 'addErpPoItems']);
+    Route::post('delete-erp-po-item',[ErpPurchaseOrder\ErpPurchaseOrderController::class, 'deleteErpPoItem']);
+    Route::apiResource('erp-purchase-order', ErpPurchaseOrder\ErpPurchaseOrderController::class);
+
+    // Sales Order
+    Route::get('sales-order-dropdown',[SalesOrder\SalesOrderController::class, 'getSalesOrderDropDown']);
+    Route::post('sales-order-item',[SalesOrder\SalesOrderController::class, 'addSalesOrderItems']);
+    Route::post('delete-sales-order-item',[SalesOrder\SalesOrderController::class, 'deleteSalesOrderItem']);
+    Route::apiResource('sales-order', SalesOrder\SalesOrderController::class);
+
+
+    // ERP Dashboard
+    Route::get('erp-dashboard',[Dashboard\ErpDashboardController::class, 'erpDashboardStats']);
+
+    // Division
+    Route::post('division-employee',[Division\DivisionController::class, 'addDivisionEmployee']);
+    Route::post('delete-division-employee',[Division\DivisionController::class, 'deleteDivisionEmployee']);
+    Route::get('division-dropdown',[Division\DivisionController::class, 'divisionDropDown']);
+    Route::apiResource('division', Division\DivisionController::class);
+
+    // Lead Qualifications
+    Route::post('lead-qualification-approval/{item}',[Lead\LeadQualificationController::class,'sendLeadQualificationForApproval']);
+    Route::apiResource('lead-qualification',Lead\LeadQualificationController::class);
+
+    // Scale Rating
+    Route::get('scale-dropdown',[Configuration\ScaleRatingController::class, 'getScaleDropDown']);
+    Route::apiResource('scale-rating',Configuration\ScaleRatingController::class);
+
+
+    // Sales Team
+    Route::post('sales-team-employee',[SalesTeam\SalesTeamController::class, 'addSalesTeamEmployee']);
+    Route::post('delete-sales-team-employee',[SalesTeam\SalesTeamController::class, 'deleteSalesTeamEmployee']);
+    Route::apiResource('sales-team', SalesTeam\SalesTeamController::class);
+
+
 
 });

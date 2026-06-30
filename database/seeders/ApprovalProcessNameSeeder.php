@@ -90,6 +90,10 @@ class ApprovalProcessNameSeeder extends Seeder
             //'approval_process_name' => 'Auction Requests Approval',
             //'approval_process_name' => 'Event Management Requests Approval',
             //'approval_process_name' => 'Salary Increments Requests Approval',
+            //'approval_process_name' => 'Consultant Requisition Approval',
+            //'approval_process_name' => 'Journal voucher Approval',
+            //'approval_process_name' => 'Qualification Approval',
+            //'approval_process_name' => 'Quotation Approval',
 
         ]);
     }

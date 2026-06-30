@@ -6,10 +6,12 @@ use App\Models\Admin\Fleet\AssignVehicle;
 use App\Models\Admin\ItemVariant;
 use App\Models\Configuration\DraftLetter;
 use App\Models\Configuration\GeneratedLetter;
+use App\Models\Division\DivisionEmployee;
 use App\Models\HR\Complaint\Complaint;
 use App\Models\HR\Payscale\PayscaleGrading;
 use App\Models\HR\Recruitment\ParentEmployeeContract;
 use App\Models\HR\TimeSheet\EmployeeTimesheet;
+use App\Models\SalesTeam\SalesTeamEmployee;
 use App\Traits\LogEvents;
 use Ramsey\Collection\Collection;
 use App\Models\ExitEmployeeDetail;
@@ -29,6 +31,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOneThrough;
+
 
 class Employee extends Model
 {
@@ -181,6 +184,10 @@ class Employee extends Model
     {
         return $this->BelongsTo(ExitEmployeeDetail::class,'exit_employee_detail_id');
     }
+    public function country(): BelongsTo
+    {
+        return $this->BelongsTo(Country::class,'country_id');
+    }
 
     public function employeeDocuments(): HasMany
     {
@@ -253,6 +260,19 @@ class Employee extends Model
     public function performancePlanning(): HasMany
     {
         return $this->hasMany(PerformancePlanning::class, 'employee_id', 'id');
+    }
+    public function salesTeamEmployee(): HasOne
+    {
+        return $this->hasOne(SalesTeamEmployee::class,'employee_id');
+    }
+
+    public function divisionEmployee(): HasOne
+    {
+        return $this->hasOne(DivisionEmployee::class,'employee_id');
+    }
+
+    public function subordinates() {
+        return $this->hasMany(Employee::class, 'report_to_id');
     }
 
 }

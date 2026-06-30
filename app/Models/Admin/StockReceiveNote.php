@@ -1,0 +1,38 @@
+<?php
+
+namespace App\Models\Admin;
+
+use App\Models\Employee;
+use App\Models\User;
+use App\Traits\LogEvents;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Relations\BelongsTo;
+use Illuminate\Database\Eloquent\SoftDeletes;
+
+class StockReceiveNote extends Model
+{
+    use LogEvents, SoftDeletes;
+
+    protected $guarded = ['id'];
+
+
+    public function ReceiveBy(): BelongsTo
+    {
+        return $this->belongsTo(Employee::class, 'receive_by');
+    }
+
+    public function StockTransferNoteId(): BelongsTo
+    {
+        return $this->belongsTo(StockTransferNote::class, 'stock_transfer_note_id');
+    }
+    public function created_by(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'created_by')->select(['id', 'name']);
+    }
+
+    public function updated_by(): BelongsTo
+    {
+        return $this->belongsTo(User::class, 'updated_by')->select(['id', 'name']);
+    }
+}
